@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SPT English Revision</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0c0f1a;
+  --surface: #131729;
+  --surface2: #1b2035;
+  --border: #252d45;
+  --accent: #e8c547;
+  --accent2: #4f8ef7;
+  --accent3: #f76b6b;
+  --accent4: #52d17c;
+  --text: #e8eaf2;
+  --text-muted: #7a83a6;
+  --text-dim: #4a5270;
+  --correct: #52d17c;
+  --wrong: #f76b6b;
+  --tag-bg: #1e2540;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* noise texture */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* HEADER */
+header {
+  padding: 2rem 2rem 1rem;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  background: rgba(12,15,26,0.92);
+  backdrop-filter: blur(12px);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.4rem;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+}
+.logo span { color: var(--accent); }
+
+.header-stats {
+  display: flex;
+  gap: 1.5rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+.stat-val {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.1rem;
+  color: var(--text);
+  font-weight: 500;
+}
+
+/* SIDEBAR + MAIN */
+.layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  min-height: calc(100vh - 72px);
+}
+
+.sidebar {
+  border-right: 1px solid var(--border);
+  padding: 1.5rem 1rem;
+  position: sticky;
+  top: 72px;
+  height: calc(100vh - 72px);
+  overflow-y: auto;
+}
+
+.sidebar::-webkit-scrollbar { width: 4px; }
+.sidebar::-webkit-scrollbar-track { background: transparent; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+.section-label {
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  font-weight: 600;
+  margin: 1.2rem 0 0.6rem 0.5rem;
+}
+
+.tab-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  padding: 0.6rem 0.8rem;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+}
+.tab-btn:hover { background: var(--surface); color: var(--text); }
+.tab-btn.active { background: var(--surface2); color: var(--accent); font-weight: 600; }
+.tab-btn .icon { font-size: 1rem; width: 1.2rem; text-align: center; }
+.tab-btn .count {
+  margin-left: auto;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  background: var(--tag-bg);
+  padding: 1px 6px;
+  border-radius: 10px;
+  color: var(--text-dim);
+}
+.tab-btn.active .count { color: var(--accent); }
+
+.shuffle-btn {
+  margin-top: 1.5rem;
+  width: 100%;
+  padding: 0.7rem;
+  background: var(--accent);
+  color: #0c0f1a;
+  border: none;
+  border-radius: 10px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+}
+.shuffle-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(232,197,71,0.3); }
+
+.progress-bar {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background: var(--surface);
+  border-radius: 10px;
+}
+.progress-bar h4 { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.7rem; letter-spacing: 0.06em; text-transform: uppercase; }
+.bar-wrap { background: var(--bg); border-radius: 6px; height: 6px; overflow: hidden; margin-bottom: 0.4rem; }
+.bar-fill { height: 100%; border-radius: 6px; transition: width 0.5s ease; background: linear-gradient(90deg, var(--accent2), var(--accent)); }
+.bar-label { font-size: 0.75rem; color: var(--text-muted); display: flex; justify-content: space-between; }
+
+/* MAIN CONTENT */
+main { padding: 2rem; overflow-y: auto; }
+
+.section-header {
+  margin-bottom: 2rem;
+}
+.section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 0.4rem;
+}
+.section-desc { color: var(--text-muted); font-size: 0.9rem; }
+
+.category-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+}
+.pill {
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-muted);
+  transition: all 0.2s;
+  font-family: 'DM Sans', sans-serif;
+}
+.pill:hover { border-color: var(--accent2); color: var(--accent2); }
+.pill.active { background: var(--accent2); border-color: var(--accent2); color: #fff; }
+.pill[data-cat="all"] { border-color: var(--accent); color: var(--accent); }
+.pill[data-cat="all"].active { background: var(--accent); color: #0c0f1a; }
+
+/* QUESTION CARDS */
+.questions-grid { display: flex; flex-direction: column; gap: 1.2rem; }
+
+.q-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  transition: all 0.3s;
+  animation: fadeUp 0.4s ease both;
+}
+.q-card:hover { border-color: var(--border); box-shadow: 0 4px 24px rgba(0,0,0,0.3); }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.q-header {
+  padding: 1rem 1.2rem 0.8rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.8rem;
+}
+.q-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  min-width: 2rem;
+  padding-top: 3px;
+}
+.q-body { flex: 1; }
+.q-text {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--text);
+  margin-bottom: 0.2rem;
+}
+.q-text .blank {
+  display: inline-block;
+  min-width: 60px;
+  height: 2px;
+  background: var(--accent);
+  vertical-align: middle;
+  margin: 0 4px;
+}
+
+.tags { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-top: 0.4rem; }
+.tag {
+  padding: 1px 7px;
+  border-radius: 4px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: var(--tag-bg);
+  color: var(--text-dim);
+}
+.tag.tense { color: #a78bfa; background: rgba(167,139,250,0.1); }
+.tag.inversion { color: #38bdf8; background: rgba(56,189,248,0.1); }
+.tag.vocab { color: #fb923c; background: rgba(251,146,60,0.1); }
+.tag.phrasal { color: #4ade80; background: rgba(74,222,128,0.1); }
+.tag.subjunctive { color: #f472b6; background: rgba(244,114,182,0.1); }
+.tag.participle { color: #facc15; background: rgba(250,204,21,0.1); }
+.tag.preposition { color: #67e8f9; background: rgba(103,232,249,0.1); }
+.tag.causative { color: #a3e635; background: rgba(163,230,53,0.1); }
+.tag.conditional { color: #c084fc; background: rgba(192,132,252,0.1); }
+.tag.wordform { color: #fda4af; background: rgba(253,164,175,0.1); }
+.tag.cloze { color: #86efac; background: rgba(134,239,172,0.1); }
+.tag.reading { color: #93c5fd; background: rgba(147,197,253,0.1); }
+
+/* OPTIONS */
+.options { padding: 0 1.2rem 1rem 3.2rem; display: grid; gap: 0.45rem; }
+.option {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.55rem 0.9rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.88rem;
+  background: var(--bg);
+}
+.option:hover { border-color: var(--accent2); background: rgba(79,142,247,0.06); }
+.option.selected { border-color: var(--accent2); background: rgba(79,142,247,0.1); }
+.option.correct { border-color: var(--correct); background: rgba(82,209,124,0.1); color: var(--correct); }
+.option.wrong { border-color: var(--wrong); background: rgba(247,107,107,0.08); color: var(--wrong); }
+.option.reveal-correct { border-color: var(--correct); background: rgba(82,209,124,0.06); }
+
+.opt-letter {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  font-weight: 600;
+  width: 1.4rem;
+  height: 1.4rem;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface2);
+  color: var(--text-muted);
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+.option.correct .opt-letter { background: var(--correct); color: #0c0f1a; }
+.option.wrong .opt-letter { background: var(--wrong); color: #fff; }
+.option.reveal-correct .opt-letter { background: rgba(82,209,124,0.2); color: var(--correct); }
+
+/* EXPLANATION */
+.explanation {
+  margin: 0 1.2rem 1rem 3.2rem;
+  padding: 0.9rem 1rem;
+  border-radius: 8px;
+  background: rgba(232,197,71,0.06);
+  border-left: 3px solid var(--accent);
+  font-size: 0.84rem;
+  line-height: 1.6;
+  color: var(--text-muted);
+  display: none;
+}
+.explanation.show { display: block; animation: fadeIn 0.3s ease; }
+.explanation strong { color: var(--accent); }
+.explanation em { color: var(--text); font-style: normal; font-weight: 500; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* WORD FORM CARDS */
+.wf-passage {
+  padding: 1rem 1.2rem;
+  background: var(--bg);
+  border-radius: 8px;
+  font-size: 0.88rem;
+  line-height: 1.8;
+  color: var(--text);
+  margin: 0 1.2rem 1rem 3.2rem;
+}
+.wf-blank {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin: 0 3px;
+}
+.wf-input {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.82rem;
+  padding: 2px 8px;
+  border-radius: 6px;
+  width: 120px;
+  outline: none;
+  transition: all 0.2s;
+}
+.wf-input:focus { border-color: var(--accent2); }
+.wf-input.correct { border-color: var(--correct); background: rgba(82,209,124,0.1); }
+.wf-input.wrong { border-color: var(--wrong); background: rgba(247,107,107,0.08); }
+.wf-base {
+  font-size: 0.68rem;
+  color: var(--accent);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.wf-check-btn {
+  margin: 0 1.2rem 1rem 3.2rem;
+  padding: 0.5rem 1.2rem;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  border-radius: 8px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.wf-check-btn:hover { border-color: var(--accent2); color: var(--text); }
+
+/* CLOZE passage */
+.cloze-passage {
+  padding: 1rem 1.2rem;
+  background: var(--bg);
+  border-radius: 8px;
+  font-size: 0.88rem;
+  line-height: 1.9;
+  color: var(--text);
+  margin: 0 1.2rem 0.6rem 3.2rem;
+  border: 1px solid var(--border);
+}
+.cloze-num {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  background: var(--accent2);
+  color: #fff;
+  border-radius: 3px;
+  padding: 0 4px;
+  margin: 0 2px;
+  vertical-align: middle;
+}
+
+/* READING */
+.reading-passage {
+  padding: 1.2rem;
+  background: var(--bg);
+  border-radius: 10px;
+  font-size: 0.87rem;
+  line-height: 1.85;
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+  border: 1px solid var(--border);
+  max-height: 220px;
+  overflow-y: auto;
+}
+.reading-passage::-webkit-scrollbar { width: 3px; }
+.reading-passage::-webkit-scrollbar-thumb { background: var(--border); }
+
+/* SCORE TOAST */
+.toast {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1rem 1.4rem;
+  font-size: 0.88rem;
+  z-index: 1000;
+  transform: translateY(100px);
+  opacity: 0;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  min-width: 200px;
+}
+.toast.show { transform: translateY(0); opacity: 1; }
+.toast .t-label { color: var(--text-muted); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; }
+.toast .t-score { font-family: 'JetBrains Mono', monospace; font-size: 1.4rem; font-weight: 600; }
+.toast.good .t-score { color: var(--correct); }
+.toast.bad .t-score { color: var(--wrong); }
+
+/* HIDDEN */
+.section-view { display: none; }
+.section-view.active { display: block; }
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { position: static; height: auto; border-right: none; border-bottom: 1px solid var(--border); display: flex; flex-wrap: wrap; gap: 0.3rem; padding: 1rem; }
+  .sidebar .section-label { width: 100%; margin: 0.3rem 0 0.2rem; }
+  .tab-btn { width: auto; }
+  .shuffle-btn, .progress-bar { width: 100%; }
+  main { padding: 1rem; }
+  .options { padding-left: 1.2rem; }
+  .explanation, .wf-check-btn, .wf-passage { padding-left: 1.2rem; margin-left: 1.2rem; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">SPT <span>English</span> Revision</div>
+  <div class="header-stats">
+    <div><div class="stat-val" id="totalAnswered">0</div>answered</div>
+    <div><div class="stat-val" id="totalCorrect">0</div>correct</div>
+    <div><div class="stat-val" id="accuracy">—</div>accuracy</div>
+  </div>
+</header>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="section-label">Question Types</div>
+    <button class="tab-btn active" onclick="switchSection('use-of-english')">
+      <span class="icon">🔤</span> Use of English <span class="count" id="c-uoe">0</span>
+    </button>
+    <button class="tab-btn" onclick="switchSection('cloze1')">
+      <span class="icon">📝</span> Cloze Tests 1 <span class="count" id="c-cloze1">0</span>
+    </button>
+    <button class="tab-btn" onclick="switchSection('wordform')">
+      <span class="icon">🔀</span> Word Formation <span class="count" id="c-wf">0</span>
+    </button>
+    <button class="section-label" style="font-size:0.68rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-dim);font-weight:600;margin:1.2rem 0 0.6rem 0.5rem;background:none;border:none;cursor:default;">Options</button>
+    <button class="shuffle-btn" onclick="shuffleAll()">⇄ &nbsp;Shuffle Questions</button>
+
+    <div class="progress-bar">
+      <h4>Your Progress</h4>
+      <div class="bar-wrap"><div class="bar-fill" id="progressBar" style="width:0%"></div></div>
+      <div class="bar-label"><span id="progressText">0 of 0</span><span id="progressPct">0%</span></div>
+    </div>
+  </aside>
+
+  <main>
+    <!-- USE OF ENGLISH -->
+    <div class="section-view active" id="sec-use-of-english">
+      <div class="section-header">
+        <div class="section-title">Use of English</div>
+        <div class="section-desc">Multiple choice — grammar, vocabulary, phrasal verbs. Click an option to answer.</div>
+      </div>
+      <div class="category-pills" id="uoe-pills"></div>
+      <div class="questions-grid" id="uoe-questions"></div>
+    </div>
+
+    <!-- CLOZE TESTS 1 -->
+    <div class="section-view" id="sec-cloze1">
+      <div class="section-header">
+        <div class="section-title">Cloze Tests 1</div>
+        <div class="section-desc">Read the passage, then choose A/B/C/D to fill each numbered gap.</div>
+      </div>
+      <div class="questions-grid" id="cloze1-questions"></div>
+    </div>
+
+    <!-- WORD FORMATION -->
+    <div class="section-view" id="sec-wordform">
+      <div class="section-header">
+        <div class="section-title">Word Formation</div>
+        <div class="section-desc">Complete the text using the correct form of the word given in capitals. Type your answer and press Check.</div>
+      </div>
+      <div class="questions-grid" id="wf-questions"></div>
+    </div>
+  </main>
+</div>
+
+<div class="toast" id="toast">
+  <div class="t-label">Score</div>
+  <div class="t-score" id="toastScore"></div>
+</div>
+
+<script>
+// =============================================
+// DATA
+// =============================================
+const uoeQuestions = [
+  // PHRASAL VERBS
+  { id:1, text:"The fire has successfully been _____ by the firefighters.", options:["put out","taken off","backed up","cut in"], answer:0, cat:"phrasal", explanation:"<strong>put out</strong> = extinguish a fire. 'Take off' = remove/depart; 'back up' = support/copy; 'cut in' = interrupt." },
+  { id:2, text:"The electric company _____ our home electricity system because we couldn't pay the bills for several months.", options:["hung up","turned down","cut off","handed down"], answer:2, cat:"phrasal", explanation:"<strong>cut off</strong> = disconnect a service. 'Turn down' = refuse/lower; 'hang up' = end a call." },
+  { id:3, text:"My sister _____ the job offer because it didn't pay enough.", options:["took off","turned down","ran into","came across"], answer:1, cat:"phrasal", explanation:"<strong>turn down</strong> = refuse/decline an offer. 'Come across' = find by chance; 'take off' = leave or remove." },
+  { id:4, text:"After a long argument, the two colleagues finally _____ and resumed working together.", options:["gave in","made up","fell out","walked away"], answer:1, cat:"phrasal", explanation:"<strong>make up</strong> = reconcile after a disagreement. 'Fall out' is its opposite (to quarrel); 'give in' = surrender." },
+  { id:5, text:"Children should be taught to _____ after playing to develop responsibility.", options:["hang out","drop out","clean up","get up"], answer:2, cat:"phrasal", explanation:"<strong>clean up</strong> = tidy a place. 'Drop out' = quit school; 'hang out' = spend time casually." },
+  { id:6, text:"Jack really takes _____ his father – they both love fixing cars and have the same sense of humour.", options:["into","after","over","back"], answer:1, cat:"phrasal", explanation:"<strong>take after</strong> = resemble a family member in looks or behaviour." },
+  { id:7, text:"We need to _____ the cause of the sudden drop in sales.", options:["look after","look into","look forward","look up"], answer:1, cat:"phrasal", explanation:"<strong>look into</strong> = investigate. 'Look after' = care for; 'look up' = search for information." },
+  { id:8, text:"_____ single-use plastics, and you will eliminate one of the major pollutants in marine ecosystems.", options:["Drop out of","Put down to","Fall in with","Do away with"], answer:3, cat:"phrasal", explanation:"<strong>do away with</strong> = eliminate/abolish. This is an imperative conditional ('Do X and Y will happen')." },
+
+  // INVERSION
+  { id:9, text:"Hardly _____ a loud boom at the stadium.", options:["the concert had started when there was","had the concert started when there was","the concert had started when was there","had the concert started when was there"], answer:1, cat:"inversion", explanation:"<strong>Hardly … when</strong> triggers negative inversion: auxiliary moves before subject → <em>had the concert started when there was</em>. Never 'when was there'." },
+  { id:10, text:"No sooner _____ her a difficult question.", options:["had she finished her presentation did the teacher ask","had she finished her presentation than the teacher asked","she had finished her presentation than the teacher asked","she had finished her presentation did the teacher ask"], answer:1, cat:"inversion", explanation:"<strong>No sooner … than</strong>: inversion required after 'No sooner' → <em>had she finished</em>, then normal order after 'than' → <em>the teacher asked</em>." },
+  { id:11, text:"Not until _____ how challenging it would be.", options:["did the test begin did I see","did the test begin I saw","the test began I saw","the test began did I see"], answer:0, cat:"inversion", explanation:"<strong>Not until + clause</strong>: the main clause inverts → <em>did I see</em>. The subordinate clause after 'Not until' keeps normal order: <em>did the test begin</em>." },
+  { id:12, text:"Not until _____ the inspiration to create Mickey Mouse.", options:["did he lose everything did Walt Disney find","did he lose everything Walt Disney found","he lost everything Walt Disney found","he lost everything did Walt Disney find"], answer:0, cat:"inversion", explanation:"<strong>Not until he lost everything</strong> = subordinate (normal order). Main clause inverts → <em>did Walt Disney find</em>." },
+  { id:13, text:"Not only _____ expectations.", options:["did she complete the project on time, but did she also exceed","she completed the project on time, but she also exceeded","did she complete the project on time, but she also exceeded","she completed the project on time, but did she also exceed"], answer:2, cat:"inversion", explanation:"<strong>Not only … but also</strong>: 'Not only' triggers inversion in its clause → <em>did she complete</em>. After 'but' = normal order: <em>she also exceeded</em>." },
+  { id:14, text:"Hardly _____ the meeting when the fire alarm went off.", options:["we had started","had we started","we started","do we start"], answer:1, cat:"inversion", explanation:"<strong>Hardly</strong> at sentence start triggers subject-auxiliary inversion. Past perfect: <em>had we started</em>." },
+  { id:15, text:"No sooner _____ the breathtaking view of the mountains.", options:["I had arrived than I saw","I had arrived than did I see","had I arrived than did I see","had I arrived than I saw"], answer:3, cat:"inversion", explanation:"<strong>No sooner … than</strong>: inversion in first clause → <em>had I arrived</em>; normal order in second → <em>I saw</em>." },
+
+  // SUBJUNCTIVE
+  { id:16, text:"It is suggested that he _____ harder if he wants to pass the exam.", options:["studies","studied","would study","study"], answer:3, cat:"subjunctive", explanation:"<strong>Subjunctive mood</strong> after 'suggest that': use base form (infinitive without 'to') → <em>study</em>, regardless of subject." },
+  { id:17, text:"The teacher suggested that the student _____ her notes before the exam to improve her understanding of the material.", options:["reviews","reviewing","should review","to review"], answer:2, cat:"subjunctive", explanation:"After 'suggest that': British English allows <strong>should + base verb</strong> → <em>should review</em>." },
+  { id:18, text:"It was crucial that the information _____ confidential.", options:["remains","remain","will remain","might remain"], answer:1, cat:"subjunctive", explanation:"<strong>Subjunctive</strong> after adjectives expressing necessity/urgency (crucial, vital, important, necessary): base form → <em>remain</em>." },
+  { id:19, text:"The board strongly recommended that the proposal _____ thoroughly reviewed by all department heads.", options:["should have been","has been","is","be"], answer:3, cat:"subjunctive", explanation:"<strong>Recommend that + subjunctive</strong>: base form of 'be' → <em>be reviewed</em> (passive subjunctive)." },
+  { id:20, text:"It is requested that the HR department _____ its annual report by the end of this month.", options:["submitted","submit","submits","would submit"], answer:1, cat:"subjunctive", explanation:"<strong>Request that + subjunctive</strong>: base form → <em>submit</em>." },
+  { id:21, text:"The manager insisted that every employee _____ the safety guidelines before starting work.", options:["reads","has read","reading","read"], answer:3, cat:"subjunctive", explanation:"<strong>Insist that + subjunctive</strong>: base form → <em>read</em>." },
+
+  // CONDITIONALS
+  { id:22, text:"Had he studied harder, he _____ the scholarship.", options:["would win","will have won","would have won","had won"], answer:2, cat:"conditional", explanation:"<strong>Inverted 3rd conditional</strong>: 'Had he studied' = 'If he had studied'. Result = <em>would have won</em> (past unreal result)." },
+  { id:23, text:"If she were more confident in her teaching skills, she _____ for the international exchange program last year.", options:["could apply","had applied","would apply","would have applied"], answer:3, cat:"conditional", explanation:"<strong>Mixed conditional</strong>: 'if she were' = present hypothetical (2nd cond.), but 'last year' signals a past result → <em>would have applied</em>." },
+  { id:24, text:"The forest fire in Alberta would have caused less damage if officials _____ the evacuation order sooner.", options:["gave","would give","had given","were giving"], answer:2, cat:"conditional", explanation:"<strong>3rd conditional</strong>: past unreal → <em>had given</em>. Result already given as 'would have caused'." },
+  { id:25, text:"If Steve Jobs _____ to Apple in 1997, the iPhone might never have been created.", options:["didn't return","would not return","hasn't returned","hadn't returned"], answer:3, cat:"conditional", explanation:"<strong>3rd conditional</strong>: past unreal. Negative = <em>hadn't returned</em>." },
+  { id:26, text:"If he had taken the internship last summer, he _____ full-time with the same company now.", options:["will have worked","would be working","would have worked","had been working"], answer:1, cat:"conditional", explanation:"<strong>Mixed conditional</strong>: 'had taken' (past condition) + 'now' (present result) → <em>would be working</em> (2nd conditional result)." },
+  { id:27, text:"If people keep teaching folk songs to younger generations, they _____ forgotten.", options:["wouldn't be","weren't","won't be","are not"], answer:2, cat:"conditional", explanation:"<strong>1st conditional</strong> (real/likely): if + present simple → future with <em>won't be</em>." },
+  { id:28, text:"Provided that you _____ enough rest, you will feel more energetic tomorrow.", options:["get","got","have got","will get"], answer:0, cat:"conditional", explanation:"<strong>Provided that</strong> = conditional conjunction. Use present simple in the condition clause → <em>get</em>." },
+  { id:29, text:"If she _____ more attention during the meeting, she would have understood the new policy.", options:["paid","had paid","pays","has paid"], answer:1, cat:"conditional", explanation:"<strong>3rd conditional</strong>: past unreal condition → <em>had paid</em>." },
+
+  // CAUSATIVE / HAVE SOMETHING DONE
+  { id:30, text:"The Smiths had their house _____ by their neighbours.", options:["repainted","repaint","to repaint","repainting"], answer:0, cat:"causative", explanation:"<strong>Have something done</strong>: have + object + <em>past participle</em> → <em>repainted</em>. This means someone else did it for them." },
+  { id:31, text:"During the renovation, they had all the old wooden floors _____ with environmentally friendly bamboo flooring.", options:["replace","to replace","replacing","replaced"], answer:3, cat:"causative", explanation:"<strong>Have + object + past participle</strong> (causative/passive): <em>replaced</em>." },
+  { id:32, text:"I had my brother _____ the new parental controls on our Wi-Fi because he's better with technology than I am.", options:["to install","install","installing","installed"], answer:1, cat:"causative", explanation:"<strong>Have + person + bare infinitive</strong> (get someone to do): <em>install</em>. Contrast with 'have something done' where object is a thing → past participle." },
+  { id:33, text:"Many companies have their customer data _____ by AI systems to improve services.", options:["analyzed","analyze","to analyze","analyzing"], answer:0, cat:"causative", explanation:"<strong>Have + object (data) + past participle</strong>: <em>analyzed</em>. The AI does the action, not the company." },
+
+  // PARTICIPLE CLAUSES
+  { id:34, text:"_____ the report ahead of schedule, she decided to take a short break before the meeting.", options:["Having completed","Being completed","Completed","Having been completed"], answer:0, cat:"participle", explanation:"<strong>Having + past participle</strong> = perfect participle clause showing completed action before main clause. Subject (she) completed the report herself." },
+  { id:35, text:"_____ abroad for several years, he quickly adapted to the new culture and work environment.", options:["Lives","Lived","Have lived","Having lived"], answer:3, cat:"participle", explanation:"<strong>Having lived</strong> = perfect participle. He lived abroad (completed) before adapting." },
+  { id:36, text:"_____ at the shelter for homeless senior inhabitants, she gained valuable experience.", options:["Volunteering","She volunteered","Volunteered","When volunteered"], answer:0, cat:"participle", explanation:"<strong>Present participle</strong> (-ing) as adverbial: <em>Volunteering</em> modifies the subject 'she'. Option B creates a comma splice." },
+  { id:37, text:"_____ by injustice, Nelson Mandela dedicated his life to fighting apartheid.", options:["Was inspired","To be inspired","Be inspired","Inspired"], answer:3, cat:"participle", explanation:"<strong>Past participle</strong> clause = passive meaning. 'Inspired by injustice' modifies Mandela." },
+  { id:38, text:"_____ in over 100 countries, the IELTS test is one of the world's most widely recognized English exams.", options:["Administered","Administer","Administering","To administer"], answer:0, cat:"participle", explanation:"<strong>Past participle</strong> (passive): the test is administered → <em>Administered in over 100 countries</em>." },
+  { id:39, text:"_____ in a second language, job seekers gain a competitive advantage in the hiring process.", options:["Are fluent","Is fluent","Be fluent","Fluent"], answer:2, cat:"participle", explanation:"'<strong>Once fluent in a second language</strong>' — 'Once' introduces a time clause. We need the adjective complement: <em>be fluent</em> (ellipsis of 'once they are fluent' → 'once fluent')." },
+  { id:40, text:"_____ hard on the project, the team demonstrated exceptional dedication and collaboration to meet the upcoming deadline.", options:["Working","The team worked","Worked","That the team worked"], answer:0, cat:"participle", explanation:"<strong>Present participle</strong> clause modifying the subject 'the team': <em>Working hard</em>." },
+  { id:41, text:"_____ tired, she went straight to bed without eating.", options:["Being","Be","Was","To be"], answer:0, cat:"participle", explanation:"<strong>Being + adjective</strong> = participial clause (causal meaning: because she was tired). 'Being tired' modifies 'she'." },
+  { id:42, text:"_____ instant entertainment, smartphones are hard to resist among numerous teenagers.", options:["Provide","Provided","Providing","They provide"], answer:1, cat:"participle", explanation:"<strong>Provided</strong> = conjunction meaning 'given that / because they provide'. Here it's an absolute participle. Option C would suggest 'smartphones are providing', but the causal meaning is best served by 'Provided'." },
+
+  // PREPOSITIONS / COLLOCATIONS
+  { id:43, text:"I didn't feel really well after a _____ meal.", options:["hard","strong","heavy","balanced"], answer:2, cat:"vocab", explanation:"<strong>heavy meal</strong> = a large, filling meal. 'Hard meal' and 'strong meal' are not idiomatic collocations." },
+  { id:44, text:"We must _____ that all safety instructions are followed before reopening the factory.", options:["assure","insure","safeguard","ensure"], answer:3, cat:"vocab", explanation:"<strong>ensure (that)</strong> = make certain. 'Assure' takes a person as object ('assure you'); 'insure' = financial insurance; 'safeguard' = protect." },
+  { id:45, text:"From her tone, I could _____ that she wasn't happy with the decision.", options:["imply","refer","argue","infer"], answer:3, cat:"vocab", explanation:"<strong>infer</strong> = deduce from evidence. 'Imply' = to suggest (speaker implies; listener infers)." },
+  { id:46, text:"She finally succeeded _____ finishing the marathon after months of training.", options:["to","in","at","on"], answer:1, cat:"preposition", explanation:"<strong>succeed in + -ing</strong>. Fixed collocation. 'Succeed to' = inherit a title/position." },
+  { id:47, text:"The manager had to apologise sincerely _____ the delay in responding to customer complaints.", options:["about","by","with","for"], answer:3, cat:"preposition", explanation:"<strong>apologise for</strong> something. Fixed prepositional collocation." },
+  { id:48, text:"The study revealed serious implications _____ public health if air pollution levels continue to rise.", options:["on","for","with","in"], answer:1, cat:"preposition", explanation:"<strong>implications for</strong> = potential consequences for. 'Implications on' is non-standard." },
+  { id:49, text:"She's really committed _____ improving education in rural areas.", options:["to","for","on","at"], answer:0, cat:"preposition", explanation:"<strong>committed to + noun/-ing</strong>. Fixed collocation." },
+  { id:50, text:"It's hard to keep up _____ all the new technology coming out these days.", options:["with","to","at","by"], answer:0, cat:"preposition", explanation:"<strong>keep up with</strong> = stay current with. Fixed phrasal verb + preposition." },
+  { id:51, text:"Many companies are switching _____ renewable energy sources to reduce their carbon footprint.", options:["to","back","with","up"], answer:0, cat:"preposition", explanation:"<strong>switch to</strong> = change from one thing to another." },
+
+  // VOCABULARY
+  { id:52, text:"The landlord threatened to _____ them if they failed to pay the rent.", options:["expel","discharge","evict","deport"], answer:2, cat:"vocab", explanation:"<strong>evict</strong> = legally remove tenants. 'Expel' = force out (school/country); 'deport' = remove from a country; 'discharge' = release from duty/hospital." },
+  { id:53, text:"His speech was met with _____ applause from the audience.", options:["furious","invisible","clamorous","thunderous"], answer:3, cat:"vocab", explanation:"<strong>thunderous applause</strong> = very loud, like thunder. A strong colocation. 'Clamorous' can work but 'thunderous' is the natural, fixed expression." },
+  { id:54, text:"The judge ruled that the suspect should be _____ due to lack of evidence.", options:["acquitted","discharged","expelled","dismissed"], answer:0, cat:"vocab", explanation:"<strong>acquitted</strong> = found not guilty in court. 'Discharged' = released; 'dismissed' usually refers to a case being dropped, not the person's guilt." },
+  { id:55, text:"The company is committed to _____ sustainable development in all sectors.", options:["fostering","generating","hindering","initiating"], answer:0, cat:"vocab", explanation:"<strong>foster</strong> = encourage/promote (growth, development). 'Initiate' = start; 'generate' = produce; 'hinder' = obstruct (wrong meaning)." },
+  { id:56, text:"Taking deep breaths can help _____ stress during a busy day.", options:["alleviate","diminish","decline","moderate"], answer:0, cat:"vocab", explanation:"<strong>alleviate</strong> = reduce or relieve (pain, stress). 'Diminish' and 'moderate' are possible but 'alleviate' is the strongest, most precise colocation with 'stress'." },
+  { id:57, text:"Each artist has a _____ style that makes their work immediately recognizable.", options:["distinctive","diverse","various","disparate"], answer:0, cat:"vocab", explanation:"<strong>distinctive</strong> = characteristic, easily distinguished. 'Diverse/various/disparate' suggest variety, not a single recognizable style." },
+  { id:58, text:"Scientists have _____ a breakthrough in tracking endangered species using new satellite technology.", options:["driven","made","thrown","done"], answer:1, cat:"vocab", explanation:"<strong>make a breakthrough</strong> = fixed collocation. You 'make' discoveries and breakthroughs." },
+  { id:59, text:"Several scholars have _____ the earlier claim by presenting new archaeological discoveries.", options:["refuted","denied","protested","refused"], answer:0, cat:"vocab", explanation:"<strong>refute</strong> = disprove with evidence. 'Deny' = say it's not true (without proof); 'refuse' is about unwillingness to do something." },
+  { id:60, text:"Despite his efforts, the damaged equipment was deemed _____ and had to be replaced.", options:["priceless","worthless","invaluable","valid"], answer:1, cat:"vocab", explanation:"<strong>worthless</strong> = having no value. 'Priceless/invaluable' = extremely valuable (opposite meaning)." },
+  { id:61, text:"His chances of getting into university were hanging by a _____, relying entirely on the outcome of his final exam.", options:["hair","rope","feather","wire"], answer:0, cat:"vocab", explanation:"<strong>hanging by a hair/thread</strong> = in a very precarious position. Fixed idiom." },
+  { id:62, text:"With rising inflation, even public transport _____ have become a burden for low-income families.", options:["fees","fares","bills","rates"], answer:1, cat:"vocab", explanation:"<strong>fares</strong> = the cost of public transport (bus, train, etc.). 'Fees' = professional/school charges; 'bills' = utility invoices." },
+  { id:63, text:"She came to a sudden _____ that her success meant nothing without someone to share it with.", options:["realization","assumption","interpretation","observation"], answer:0, cat:"vocab", explanation:"<strong>realization</strong> = suddenly understanding something important. 'Come to a realization' is a natural collocation." },
+  { id:64, text:"The government's sudden policy shift has _____ widespread criticism from both the public and economic experts.", options:["provoked","evoked","revoked","invoked"], answer:0, cat:"vocab", explanation:"<strong>provoke</strong> = cause a reaction. 'Evoke' = call up memories/feelings; 'revoke' = cancel officially; 'invoke' = cite/call upon." },
+  { id:65, text:"Conservation efforts aim to preserve biological _____ by protecting endangered species and their habitats.", options:["collection","plenty","diversity","abundance"], answer:2, cat:"vocab", explanation:"<strong>biological diversity</strong> (biodiversity) = the variety of living organisms. Fixed scientific collocation." },
+
+  // GERUND vs INFINITIVE
+  { id:66, text:"The students failed _____ the assignment on time due to technical issues.", options:["submit","to submit","submitted","submitting"], answer:1, cat:"tense", explanation:"<strong>fail to do</strong> = fixed pattern with infinitive. 'Fail in doing' is much less common and formal." },
+  { id:67, text:"Many people mean _____ lifelong learning by taking online courses and attending workshops throughout their careers.", options:["pursue","pursuing","pursued","to pursue"], answer:1, cat:"tense", explanation:"<strong>mean + -ing</strong> = involve/entail. 'Mean to do' = intend to do (different meaning)." },
+  { id:68, text:"The company is said _____ its customer base significantly.", options:["expand","expanding","expanded","to expand"], answer:3, cat:"tense", explanation:"<strong>is said to + infinitive</strong> = reported structure. 'The company is said to expand / to be expanding / to have expanded'." },
+  { id:69, text:"Climate change _____ a serious threat to coastal communities.", options:["poses","takes","holds","gains"], answer:0, cat:"vocab", explanation:"<strong>pose a threat</strong> = present/constitute a danger. Fixed collocation." },
+];
+
+// CLOZE TESTS DATA
+const clozeTests = [
+  {
+    id: "c1",
+    title: "Oprah Winfrey",
+    passage: `Oprah Winfrey is a self-made American actress, philanthropist, and author, best known for her talk show, The Oprah Winfrey Show. Oprah Winfrey's life story is truly inspiring. Indeed, if she (1)_____ in herself, she would not have achieved so much. She was born (2)_____ poverty and raised by her grandmother in difficult conditions. Despite facing many challenges, including (3)_____ and discrimination, she never gave up. Her talent (4)_____ at a young age, and she had a job at a radio station (5)_____ she was still in high school. Over time, she became one of the most influential women in the world. Winfrey's career spans decades, from early news reporting to (6)_____ her own television network, Oprah Winfrey Network.`,
+    questions: [
+      { num:1, options:["had not believed","did not believe","does not believe","has not believed"], answer:0, explanation:"3rd conditional context: 'if she had not believed'. Past perfect in if-clause." },
+      { num:2, options:["in","of","into","from"], answer:0, explanation:"<strong>born in poverty</strong> = fixed expression. 'Born into poverty' is also possible but 'in' matches here." },
+      { num:3, options:["provision","credibility","navigation","abuse"], answer:3, explanation:"Facing <strong>abuse</strong> and discrimination are real hardships Oprah overcame. 'Provision' doesn't collocate here." },
+      { num:4, options:["being discovered","to be discovered","discovered","was discovered"], answer:2, explanation:"'Her talent <strong>discovered</strong>' — past participle in reduced relative clause ('Her talent, which was discovered...')." },
+      { num:5, options:["while","because","until","before"], answer:0, explanation:"<strong>while</strong> = during the time that. She had the job while she was in high school (simultaneous actions)." },
+      { num:6, options:["commemorating","initiating","distributing","accomplishing"], answer:1, explanation:"<strong>initiating</strong> = starting/establishing. She founded/launched her own network." },
+    ]
+  },
+  {
+    id: "c2",
+    title: "Content Creation",
+    passage: `Content creation has indeed become increasingly popular these days. A day in the life of content creators like Jackson, a university student, is no (1)_____ in the park. Jackson has to put a lot of effort into every post or video he wants to share. The (2)_____ the audience grows, the more creative the content needs to be. Each morning, ideas (3)_____, and then he writes scripts before filming begins. Once videos are recorded, Jackson must edit them carefully, which can take quite (4)_____ hours. When deadlines are tight, work can be stressful for him. However, the job is also rewarding, especially (5)_____ positive feedback is received. A large number of skills are needed, including communication and time management. With the right mindset, content creation can be both (6)_____ and sustainable, even if it's a highly competitive field.`,
+    questions: [
+      { num:1, options:["walk","stroll","picnic","holiday"], answer:0, explanation:"<strong>no walk in the park</strong> = idiom meaning 'not easy'. 'It's no walk in the park.'" },
+      { num:2, options:["Larger","More","Bigger","The larger"], answer:3, explanation:"<strong>The + comparative … the + comparative</strong> structure: 'The larger the audience grows, the more creative…'" },
+      { num:3, options:["pour in","pour out","flow to","flow out"], answer:0, explanation:"<strong>pour in</strong> = arrive in large numbers/quantities. Ideas pour in = many ideas come to mind." },
+      { num:4, options:["a few","quite a few","a lot of","much"], answer:1, explanation:"<strong>quite a few</strong> = a considerable number. Used with countable 'hours'." },
+      { num:5, options:["when","while","because","although"], answer:0, explanation:"<strong>especially when</strong> = particularly at the time that. Context: it's rewarding when feedback is positive." },
+      { num:6, options:["fulfilling","filling","fulfilled","full"], answer:0, explanation:"<strong>fulfilling</strong> (adjective) = giving satisfaction/a sense of purpose. 'Fulfilled' is how a person feels; 'fulfilling' describes the activity." },
+    ]
+  }
+];
+
+// WORD FORMATION DATA
+const wordFormExercises = [
+  {
+    id: "wf1",
+    title: "Project-Based Learning",
+    passage: [
+      { text:"Project-based learning (PBL) is a teaching method that helps students learn by working on real-life problems and tasks. Unlike traditional teaching methods, PBL encourages learners to collaborate, think critically, (1)_____ , and apply knowledge to complete meaningful projects. This way, they understand the subject better because they see how it applies to the real world, making learning more (2)_____ and motivating. PBL also helps students improve important skills like communication, teamwork, and problem-solving, which are invaluable in school and later in jobs. It also promotes (3)_____ and encourages students to take responsibility for their own learning by planning and organizing their work (4)_____. Overall, project-based learning prepares students to do well in exams and also to succeed in different situations outside the classroom." },
+    ],
+    blanks: [
+      { num:1, base:"CONCEPT", answer:"conceptually", explanation:"<strong>conceptually</strong> (adverb) — parallel to 'think critically'. CONCEPT → conceptual → conceptually." },
+      { num:2, base:"RELATE", answer:"relevant", explanation:"<strong>relevant</strong> (adjective) — making learning more relevant. RELATE → relevant (related adj form)." },
+      { num:3, base:"AUTONOMIZE", answer:"autonomy", explanation:"<strong>autonomy</strong> (noun) — 'promotes autonomy'. AUTONOMIZE → autonomy." },
+      { num:4, base:"DEPEND", answer:"independently", explanation:"<strong>independently</strong> (adverb) — planning their work independently. DEPEND → independent → independently." },
+    ]
+  },
+  {
+    id: "wf2",
+    title: "Family Bonding",
+    passage: [
+      { text:"Family bonding is very important for creating strong and healthy relationships. When families spend time together, they build trust and feel more connected. Simple activities like eating meals together, going for walks, or talking about the day can (1)_____ emotional connections. These moments help family members understand each other better and create lasting memories. Being (2)_____, such as giving hugs, saying kind words, or doing nice things for each other, shows love and care. In families where bonding is strong, people are more likely to help each other during hard times and share happy moments together. This emotional (3)_____ is important for both children and adults, as it builds trust and reduces stress." },
+    ],
+    blanks: [
+      { num:1, base:"DEPTH", answer:"deepen", explanation:"<strong>deepen</strong> (verb) — 'can deepen emotional connections'. DEPTH → deep → deepen." },
+      { num:2, base:"AFFECTION", answer:"affectionate", explanation:"<strong>affectionate</strong> (adjective) — 'Being affectionate'. AFFECTION → affectionate." },
+      { num:3, base:"CLOSE", answer:"closeness", explanation:"<strong>closeness</strong> (noun) — 'emotional closeness'. CLOSE → closeness." },
+    ]
+  },
+  {
+    id: "wf3",
+    title: "Social Media & Youth",
+    passage: [
+      { text:"Social media platforms have become an (1)_____ part of modern life, especially for young people. While they offer many benefits such as staying connected and accessing information, there are also significant (2)_____ . Many teenagers spend excessive time online, which can affect their mental health and reduce face-to-face (3)_____. Moreover, the spread of (4)_____ information online can mislead users and create confusion. It is therefore essential that young people develop digital (5)_____ skills to critically evaluate what they see and share online." },
+    ],
+    blanks: [
+      { num:1, base:"SEPARATE", answer:"inseparable", explanation:"<strong>inseparable</strong> (adj) — 'an inseparable part'. SEPARATE → inseparable (in- prefix = not)." },
+      { num:2, base:"DRAW", answer:"drawbacks", explanation:"<strong>drawbacks</strong> (noun, plural) — disadvantages. DRAW → drawback → drawbacks." },
+      { num:3, base:"INTERACT", answer:"interaction", explanation:"<strong>interaction</strong> (noun) — 'face-to-face interaction'. INTERACT → interaction." },
+      { num:4, base:"ACCURATE", answer:"inaccurate", explanation:"<strong>inaccurate</strong> (adj) — wrong information. ACCURATE → inaccurate (in- = not)." },
+      { num:5, base:"LITERATE", answer:"literacy", explanation:"<strong>literacy</strong> (noun) — 'digital literacy'. LITERATE → literacy." },
+    ]
+  }
+];
+
+// =============================================
+// STATE
+// =============================================
+let state = {
+  currentSection: 'use-of-english',
+  answered: {},
+  correct: 0,
+  answered_count: 0,
+  uoeFilter: 'all',
+  uoeOrder: null,
+  clozeOrder: null,
+};
+
+// =============================================
+// INIT
+// =============================================
+function init() {
+  // Set counts
+  document.getElementById('c-uoe').textContent = uoeQuestions.length;
+  document.getElementById('c-cloze1').textContent = clozeTests.reduce((a,c) => a+c.questions.length, 0);
+  document.getElementById('c-wf').textContent = wordFormExercises.reduce((a,e) => a+e.blanks.length, 0);
+
+  // Build category pills for UoE
+  buildUoEPills();
+
+  // Shuffle orders
+  state.uoeOrder = shuffle([...Array(uoeQuestions.length).keys()]);
+  state.clozeOrder = shuffle([...Array(clozeTests.length).keys()]);
+
+  renderUoE();
+  renderCloze();
+  renderWordForm();
+}
+
+function shuffle(arr) {
+  for (let i = arr.length-1; i>0; i--) {
+    const j = Math.floor(Math.random()*(i+1));
+    [arr[i],arr[j]] = [arr[j],arr[i]];
+  }
+  return arr;
+}
+
+// =============================================
+// NAVIGATION
+// =============================================
+function switchSection(sec) {
+  state.currentSection = sec;
+  document.querySelectorAll('.section-view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('sec-' + sec).classList.add('active');
+  event.currentTarget.classList.add('active');
+  updateProgress();
+}
+
+function shuffleAll() {
+  state.uoeOrder = shuffle([...Array(uoeQuestions.length).keys()]);
+  state.clozeOrder = shuffle([...Array(clozeTests.length).keys()]);
+  // Re-render all
+  renderUoE();
+  renderCloze();
+  renderWordForm();
+  showToast('Shuffled! ⇄', null);
+}
+
+// =============================================
+// USE OF ENGLISH
+// =============================================
+const catLabels = {
+  'all':'All', 'phrasal':'Phrasal Verbs', 'inversion':'Inversion',
+  'subjunctive':'Subjunctive', 'conditional':'Conditionals',
+  'causative':'Causative', 'participle':'Participles',
+  'preposition':'Prepositions', 'vocab':'Vocabulary', 'tense':'Gerund/Infinitive'
+};
+
+function buildUoEPills() {
+  const cats = ['all', ...new Set(uoeQuestions.map(q=>q.cat))];
+  const container = document.getElementById('uoe-pills');
+  container.innerHTML = cats.map(c =>
+    `<button class="pill ${c==='all'?'active':''}" data-cat="${c}" onclick="filterUoE('${c}')">${catLabels[c]||c}</button>`
+  ).join('');
+}
+
+function filterUoE(cat) {
+  state.uoeFilter = cat;
+  document.querySelectorAll('.pill').forEach(p => p.classList.toggle('active', p.dataset.cat===cat));
+  renderUoE();
+}
+
+function renderUoE() {
+  const container = document.getElementById('uoe-questions');
+  const qs = state.uoeOrder.map(i => uoeQuestions[i]).filter(q => state.uoeFilter==='all' || q.cat===state.uoeFilter);
+  container.innerHTML = qs.map((q,idx) => buildUoECard(q, idx+1)).join('');
+}
+
+function buildUoECard(q, num) {
+  const sid = `uoe-${q.id}`;
+  const savedAnswer = state.answered[sid];
+  const isAnswered = savedAnswer !== undefined;
+
+  const textHtml = q.text.replace('_____', '<span class="blank"></span>');
+
+  const optionsHtml = q.options.map((opt, i) => {
+    let cls = 'option';
+    if (isAnswered) {
+      if (i === q.answer) cls += ' correct reveal-correct';
+      else if (i === savedAnswer && savedAnswer !== q.answer) cls += ' wrong';
+      else cls += ' correct reveal-correct';
+      if (i === q.answer) cls = 'option correct';
+      if (i === savedAnswer && savedAnswer !== q.answer) cls = 'option wrong';
+      if (i === q.answer && savedAnswer !== q.answer) cls = 'option reveal-correct';
+    }
+    return `<div class="${cls}" onclick="answerUoE('${sid}', ${i}, ${q.answer})">
+      <span class="opt-letter">${'ABCD'[i]}</span>${opt}</div>`;
+  }).join('');
+
+  const expStyle = isAnswered ? 'show' : '';
+  const tagHtml = `<div class="tags"><span class="tag ${q.cat}">${catLabels[q.cat]||q.cat}</span></div>`;
+
+  return `<div class="q-card" id="card-${sid}">
+    <div class="q-header">
+      <span class="q-num">${String(num).padStart(2,'0')}</span>
+      <div class="q-body">
+        <div class="q-text">${textHtml}</div>
+        ${tagHtml}
+      </div>
+    </div>
+    <div class="options">${optionsHtml}</div>
+    <div class="explanation ${expStyle}" id="exp-${sid}">📖 ${q.explanation}</div>
+  </div>`;
+}
+
+function answerUoE(sid, chosen, correct) {
+  if (state.answered[sid] !== undefined) return;
+  state.answered[sid] = chosen;
+  state.answered_count++;
+  if (chosen === correct) state.correct++;
+
+  // Re-render this card
+  const qId = parseInt(sid.split('-')[1]);
+  const q = uoeQuestions.find(q => q.id === qId);
+  const num = parseInt(document.getElementById('card-'+sid).querySelector('.q-num').textContent);
+  document.getElementById('card-'+sid).outerHTML = buildUoECard(q, num);
+  updateStats();
+}
+
+// =============================================
+// CLOZE TESTS
+// =============================================
+function renderCloze() {
+  const container = document.getElementById('cloze1-questions');
+  container.innerHTML = state.clozeOrder.map(i => buildClozeCard(clozeTests[i])).join('');
+}
+
+function buildClozeCard(test) {
+  const passageHtml = test.passage.replace(/\((\d+)\)_+/g, (m, n) =>
+    `<span class="cloze-num">${n}</span>`);
+
+  const qHtml = test.questions.map((q) => {
+    const sid = `cloze-${test.id}-${q.num}`;
+    const saved = state.answered[sid];
+    const isAnswered = saved !== undefined;
+    const optsHtml = q.options.map((opt, i) => {
+      let cls = 'option';
+      if (isAnswered) {
+        if (i === q.answer) cls = 'option correct';
+        else if (i === saved) cls = 'option wrong';
+        else cls = 'option reveal-correct';
+      }
+      return `<div class="${cls}" onclick="answerCloze('${sid}', ${i}, ${q.answer}, '${test.id}')">
+        <span class="opt-letter">${'ABCD'[i]}</span>${opt}</div>`;
+    }).join('');
+    const expStyle = isAnswered ? 'show' : '';
+    return `<div class="q-card" id="card-${sid}" style="margin-left:0;border-radius:8px;">
+      <div class="q-header">
+        <span class="q-num">${q.num}</span>
+        <div class="q-body"><div class="q-text">Gap (${q.num})</div></div>
+      </div>
+      <div class="options">${optsHtml}</div>
+      <div class="explanation ${expStyle}" id="exp-${sid}">📖 ${q.explanation}</div>
+    </div>`;
+  }).join('');
+
+  return `<div class="q-card">
+    <div class="q-header">
+      <span class="q-num">📄</span>
+      <div class="q-body"><div class="q-text" style="font-size:1rem;font-weight:600;">${test.title}</div>
+      <div class="tags"><span class="tag cloze">Cloze</span></div></div>
+    </div>
+    <div class="cloze-passage">${passageHtml}</div>
+    <div style="padding:0 1.2rem 1rem 3.2rem;display:flex;flex-direction:column;gap:0.6rem;">${qHtml}</div>
+  </div>`;
+}
+
+function answerCloze(sid, chosen, correct) {
+  if (state.answered[sid] !== undefined) return;
+  state.answered[sid] = chosen;
+  state.answered_count++;
+  if (chosen === correct) state.correct++;
+
+  // Re-render parent cloze card
+  const parts = sid.split('-');
+  const testId = parts[1] + '-' + parts[2]; // e.g. "c1"
+  const test = clozeTests.find(t => t.id === testId);
+  // Refresh whole cloze section
+  renderCloze();
+  updateStats();
+}
+
+// =============================================
+// WORD FORMATION
+// =============================================
+function renderWordForm() {
+  const container = document.getElementById('wf-questions');
+  container.innerHTML = wordFormExercises.map(ex => buildWFCard(ex)).join('');
+}
+
+function buildWFCard(ex) {
+  let passageText = ex.passage[0].text;
+  // Replace (N)_____ with input fields
+  passageText = passageText.replace(/\((\d+)\)_+/g, (m, n) => {
+    const blank = ex.blanks.find(b => b.num === parseInt(n));
+    const sid = `wf-${ex.id}-${n}`;
+    const saved = state.answered[sid];
+    let inputCls = '';
+    let val = '';
+    if (saved !== undefined) {
+      inputCls = saved.toLowerCase().trim() === blank.answer.toLowerCase() ? 'correct' : 'wrong';
+      val = saved;
+    }
+    return `<span class="wf-blank">
+      <span class="wf-base">${blank.base}</span>
+      <input class="wf-input ${inputCls}" id="inp-${sid}" data-sid="${sid}" data-answer="${blank.answer}" placeholder="(${n})" value="${val}" ${saved!==undefined?'disabled':''} />
+    </span>`;
+  });
+
+  // Build explanation list
+  const expHtml = ex.blanks.map(b => {
+    const sid = `wf-${ex.id}-${b.num}`;
+    const saved = state.answered[sid];
+    if (saved === undefined) return '';
+    return `<div style="margin-bottom:0.4rem;"><strong style="color:var(--accent);">(${b.num}) ${b.answer}</strong> — ${b.explanation}</div>`;
+  }).filter(Boolean).join('');
+
+  return `<div class="q-card" id="wfcard-${ex.id}">
+    <div class="q-header">
+      <span class="q-num">📝</span>
+      <div class="q-body">
+        <div class="q-text" style="font-size:1rem;font-weight:600;">${ex.title}</div>
+        <div class="tags"><span class="tag wordform">Word Formation</span></div>
+      </div>
+    </div>
+    <div class="wf-passage">${passageText}</div>
+    <button class="wf-check-btn" onclick="checkWF('${ex.id}')">✓ Check Answers</button>
+    ${expHtml ? `<div class="explanation show" style="margin:0 1.2rem 1rem 1.2rem;">${expHtml}</div>` : ''}
+  </div>`;
+}
+
+function checkWF(exId) {
+  const ex = wordFormExercises.find(e => e.id === exId);
+  ex.blanks.forEach(b => {
+    const sid = `wf-${exId}-${b.num}`;
+    if (state.answered[sid] !== undefined) return;
+    const inp = document.getElementById('inp-' + sid);
+    if (!inp) return;
+    const userAnswer = inp.value.trim().toLowerCase();
+    if (!userAnswer) return;
+    state.answered[sid] = inp.value.trim();
+    state.answered_count++;
+    if (userAnswer === b.answer.toLowerCase()) {
+      state.correct++;
+      inp.classList.add('correct');
+    } else {
+      inp.classList.add('wrong');
+    }
+    inp.disabled = true;
+  });
+  updateStats();
+  renderWordForm();
+}
+
+// =============================================
+// STATS
+// =============================================
+function updateStats() {
+  document.getElementById('totalAnswered').textContent = state.answered_count;
+  document.getElementById('totalCorrect').textContent = state.correct;
+  const acc = state.answered_count > 0 ? Math.round(state.correct/state.answered_count*100) : 0;
+  document.getElementById('accuracy').textContent = state.answered_count > 0 ? acc+'%' : '—';
+  updateProgress();
+}
+
+function updateProgress() {
+  const total = uoeQuestions.length + clozeTests.reduce((a,c)=>a+c.questions.length,0) + wordFormExercises.reduce((a,e)=>a+e.blanks.length,0);
+  const done = state.answered_count;
+  const pct = total > 0 ? Math.round(done/total*100) : 0;
+  document.getElementById('progressBar').style.width = pct+'%';
+  document.getElementById('progressText').textContent = `${done} of ${total}`;
+  document.getElementById('progressPct').textContent = pct+'%';
+}
+
+function showToast(msg, score) {
+  const toast = document.getElementById('toast');
+  const scoreEl = document.getElementById('toastScore');
+  scoreEl.textContent = msg || (score !== null ? score+'%' : '');
+  toast.className = 'toast show' + (score !== null ? (score>=60?' good':' bad') : '');
+  setTimeout(() => { toast.classList.remove('show'); }, 2500);
+}
+
+// =============================================
+// START
+// =============================================
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
